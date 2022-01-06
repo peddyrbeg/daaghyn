@@ -9,7 +9,7 @@ class Balloon {
 		this.popped = false;
 		this.a = 255;
 		this.finished = false;
-		this.speed = random(0.5, 1.5);
+		this.speed = random(1, 2);
 	}
 
 	display () {
@@ -28,8 +28,10 @@ class Balloon {
 
 	balloonPop () {
 		if (mouseX > this.x -50 && mouseX < this.x +50 && mouseY < this.y +50 && mouseY > this.y -50 && ranCol == this.r) {
-			popSound.play();
-			if (this.popped == false) score++;
+			if (this.popped == false) {
+				popSound.play();
+				score++;
+			}
 			this.finished = true;
 			this.popped = true;
 		}
