@@ -3,6 +3,8 @@ var daah = [];
 var popped = [];
 var colour = ["JIARG", "GORRYM", "BWEE", "GLASS"];
 var ranCol;
+var colCount = [0, 0, 0, 0];
+var ranDaah;
 
 var keyDown = false;
 var roundOver = false;
@@ -35,10 +37,9 @@ function setup() {
 
 	textFont(aBeeZee);
 
-	for (let i = 0; i < 10; i++) {
-    	agent.push(new Balloon());
+	for (let i = 0; i < 12; i++) {
+   		agent.push(new Balloon(ranDaah));
  	}
-
  	ranCol = Math.floor(random(0, 4));
  	colourChanges = [Math.floor(random(300, 500)), Math.floor(random(800, 1000))];
 }
