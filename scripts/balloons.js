@@ -6,6 +6,7 @@ class Balloon {
 		balloonCount++;
 		this.tag = balloonCount;
 		this.r = Math.floor(random(0,7));
+		this.rot = 0;
 		this.daah = daah[this.r];
 		this.x = random(50, 250);
 		this.y = height;
@@ -16,14 +17,22 @@ class Balloon {
 		this.direction = 0;
 		this.txtSize = 16;
 		this.multiplier = this.speed*level;
+		this.rTurn = true;
 	}
 
 	display () {
 		imageMode(CENTER);
 		tint(255, this.a);
 		if (frameCount > this.release && this.popped == false) {
-			this.y = this.y - this.multiplier;
-			image(this.daah, this.x, this.y);
+			this.y -= this.multiplier;
+			if (this.rot > 0.05) this.rTurn = false;
+			else if (this.rot < -0.05) this.rTurn = true;
+			this.rTurn ? this.rot += 0.001*this.speed : this.rot -= 0.001*this.speed;
+			push();
+			translate(this.x, this.y);
+			rotate(this.rot);
+			image(this.daah, 0, 0);
+			pop();
 		}
 		else if (this.popped == true) {
 			this.a = this.a - 3;
