@@ -50,7 +50,6 @@ function setup() {
 	var x = (displayWidth - width) / 2;
 	cnv.position(x);
 
-	music.play();
 	music.loop();
 	music.setVolume(0.2);
 
