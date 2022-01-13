@@ -71,7 +71,6 @@ class Balloon {
 	balloonRemove () {
 		let i = agent.map((element) => element.tag).indexOf(this.tag);
 		agent.splice(i, 1, "popped");
-		console.log(agent)
 	}
 
 }
