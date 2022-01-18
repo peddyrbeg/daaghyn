@@ -12,7 +12,7 @@ class startPic {
 
 	display () {
 		push();
-		if (this.x > cnv.width) {
+		if (this.x > cnv.width + 150) {
 			this.c = Math.floor(random(0,7));
 			this.x = -150;
 			this.y = Math.floor(random(0, height));
