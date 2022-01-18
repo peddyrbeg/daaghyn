@@ -3,23 +3,31 @@ var stAgent = [];
 var agent = [];
 var daah = [];
 var popped = [];
+
 var colour = ["JIARG", "GORRYM", "BWEE", "GLASS", "DOO", "BANE", "DHONE"];
 var oldCol = 0;
 var newCol = 0;
-var ranCol;
-var colCount = [0, 0, 0, 0];
+var ranCol = 0;
+var colCount = [0, 0, 0, 0, 0, 0, 0];
 var ranDaah;
+var actC = [];
+var stroop;
+var changed = true;
+
 var music;
 var restart;
 var finish;
 
 var gameStarted = false;
-var startButton;
+var difficulty;
+var easy;
+var medium;
+var hard;
 var roundOver = false;
 
 var score = 0;
 var level = 1;
-var colSize = 30;
+var colSize = 40;
 var colSizeAct = false;
 
 var gameOver = false;
@@ -49,7 +57,7 @@ function preload () {
 }
 
 function setup() {
-	if (displayWidth <= 480) cnv = createCanvas(displayWidth, displayHeight);
+	if (displayWidth <= 480) cnv = createCanvas(displayWidth, displayHeight-163);
 	else cnv = createCanvas(320, displayHeight-163);
 	var x = (displayWidth - width) / 2;
 	cnv.position(x);
@@ -60,21 +68,42 @@ function setup() {
 	    stAgent.push(new startPic());
 	}
 
-	for (let j = 0; j < 13; j++) {
-   		agent.push(new Balloon());
- 	}
-
- 	newCol = Math.floor(random(0, colour.length));
- 	ranCol = newCol;
+	newCol = Math.floor(random(0, colour.length));
+	ranCol = newCol;
+ 	stroop = Math.floor(random(0, actC.length));
  	colourChanges = [Math.floor(random(300, 500)), Math.floor(random(800, 1000))];
 
- 	startButton = createButton("START");
- 	startButton.position(displayWidth/2-100, height/3);
- 	startButton.size(200, 100);
- 	startButton.style("background", "white");
- 	startButton.style("border-radius", "10px");
- 	startButton.style("font-size", "30px");
- 	startButton.mousePressed(startGame);
+	actC[0] = color("#ED3232");
+	actC[1] = color("#1999F2");
+	actC[2] = color("#FFC00C");
+	actC[3] = color("#51FF0E");
+	actC[4] = color(0);
+	actC[5] = color(255);
+	actC[6] = color("#B28B1A");
+
+ 	easy = createButton("AASHAGH (EASY)");
+ 	easy.position(displayWidth/2-100, 200);
+ 	easy.size(200, 100);
+ 	easy.style("background", "white");
+ 	easy.style("border-radius", "10px");
+ 	easy.style("font-size", "30px");
+ 	easy.mousePressed(function() { startGame(0);});
+
+ 	medium = createButton("MEANAGH (MEDIUM)");
+ 	medium.position(displayWidth/2-100, 350);
+ 	medium.size(200, 100);
+ 	medium.style("background", "white");
+ 	medium.style("border-radius", "10px");
+ 	medium.style("font-size", "30px");
+ 	medium.mousePressed(function() { startGame(1);});
+
+ 	hard = createButton("DOILLEE (HARD)");
+ 	hard.position(displayWidth/2-100, 500);
+ 	hard.size(200, 100);
+ 	hard.style("background", "white");
+ 	hard.style("border-radius", "10px");
+ 	hard.style("font-size", "30px");
+ 	hard.mousePressed(function() { startGame(2);});
 
  	restart = createButton("RESTART");
  	restart.size(100, 32.5);
@@ -108,23 +137,23 @@ function draw () {
 
 	else {
 
-		changeTime();
 		colourSize();
 
-		if (agent.every(element => element == "popped")) roundOver = true;
+		if (agent.every(element => element == "gone")) roundOver = true;
 
-			if (roundOver) {
-				roundOver = false;
-				agent = [];
-				frameCount = 0;
-				level++;
-				for (let i = 0; i < 13; i++) {
-	    			agent.push(new Balloon());
-		 		}
-			}
+		if (roundOver) {
+			roundOver = false;
+			agent = [];
+			colCount = [0, 0, 0, 0, 0, 0, 0];
+			frameCount = 0;
+			for (let i = 0; i < 12; i++) {
+	    		agent.push(new Balloon());
+		 	}
+		 	changeTime();
+		}
 
 		agent.forEach(element => {
-			if (element != "popped") element.display()
+			if (element != "gone") element.display()
 		});
 
 
@@ -132,13 +161,17 @@ function draw () {
 		noStroke();
 		rect(0, 0, width, 75);
 
-		fill(0);
+		if (difficulty == 0) fill(actC[ranCol]);
+		else if (difficulty == 1) fill(0);
+		else if (difficulty == 2) fill(actC[stroop]);
+		stroke(1);
 		textSize(colSize);
 		textAlign(CENTER);
 	  	text(colour[ranCol], width/2, 50);
 
 	  	fill(255);
-	  	rect(0, height-107.5, width, 107.5);
+	  	noStroke();
+	  	rect(0, height-107.5, cnv.width, 107.5);
 
 	  	stroke(0);
 	  	ellipse(width/2, height-72.5, 75, 50);
@@ -158,19 +191,30 @@ function draw () {
 
 function mousePressed () {
 	agent.forEach(element => {
-    	if (element != "popped") element.balloonPop()
+    	if (element != "gone") element.balloonPop()
   	});
 }
 
 function changeTime () {
-	if (frameCount % 300 == 0) {
+	if (changed) {
 		oldCol = newCol;
 		newCol = Math.floor(random(0, colour.length));
-		if (newCol != oldCol) {
-			ranCol = newCol;
-			colSizeAct = true;
-		}
 	}
+	if (newCol == oldCol && colCount[newCol] != 0) setCol();
+	else if (newCol != oldCol && colCount[newCol] == 0) setCol();
+	else if (newCol != oldCol && colCount[newCol] != 0) {
+		ranCol = newCol;
+		stroop = Math.floor(random(0, actC.length));
+		colSizeAct = true;
+		changed = true;
+		console.log("here")
+	}
+}
+
+function setCol () {
+	changed = false;
+	newCol = Math.floor(random(0, colour.length));
+	changeTime();
 }
 
 function colourSize () {
@@ -179,17 +223,23 @@ function colourSize () {
 	}
 	else {
 		colSizeAct = false;
-		colSize = 30;
+		colSize = 40;
 	}
 }
 
-function startGame () {
+function startGame (diff) {
 	gameStarted = true;
+	if (diff == 0) difficulty = 0;
+	else if (diff == 1) difficulty = 1;
+	else if (diff == 2) difficulty = 2;
 	music.loop();
 	music.setVolume(0.2);
-	startButton.style("display", "none");
+	easy.style("display", "none");
+	medium.style("display", "none");
+	hard.style("display", "none");
 	restart.style("display", "block");
 	finish.style("display", "block");
+	frameCount = 0;
 }
 
 function restartGame () {
@@ -198,6 +248,12 @@ function restartGame () {
 
 function finishGame () {
 	gameOver = true;
+}
+
+function levelUP () {
+	if (score > 25 && score < 50) level = 2;
+	if (score >= 50 && score < 75) level = 3;
+	if (score >= 75 && score < 100) level = 4;
 }
 
 function endScore () {
