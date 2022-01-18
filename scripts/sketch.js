@@ -82,7 +82,7 @@ function setup() {
 	actC[6] = color("#B28B1A");
 
  	easy = createButton("AASHAGH (EASY)");
- 	easy.position(displayWidth/2-100, 200);
+ 	easy.position(displayWidth/2-100, 150);
  	easy.size(200, 100);
  	easy.style("background", "white");
  	easy.style("border-radius", "10px");
@@ -90,7 +90,7 @@ function setup() {
  	easy.mousePressed(function() { startGame(0);});
 
  	medium = createButton("MEANAGH (MEDIUM)");
- 	medium.position(displayWidth/2-100, 350);
+ 	medium.position(displayWidth/2-100, 300);
  	medium.size(200, 100);
  	medium.style("background", "white");
  	medium.style("border-radius", "10px");
@@ -98,7 +98,7 @@ function setup() {
  	medium.mousePressed(function() { startGame(1);});
 
  	hard = createButton("DOILLEE (HARD)");
- 	hard.position(displayWidth/2-100, 500);
+ 	hard.position(displayWidth/2-100, 450);
  	hard.size(200, 100);
  	hard.style("background", "white");
  	hard.style("border-radius", "10px");
@@ -146,7 +146,7 @@ function draw () {
 			agent = [];
 			colCount = [0, 0, 0, 0, 0, 0, 0];
 			frameCount = 0;
-			for (let i = 0; i < 12; i++) {
+			for (let i = 0; i < 14; i++) {
 	    		agent.push(new Balloon());
 		 	}
 		 	changeTime();
@@ -207,7 +207,6 @@ function changeTime () {
 		stroop = Math.floor(random(0, actC.length));
 		colSizeAct = true;
 		changed = true;
-		console.log("here")
 	}
 }
 
