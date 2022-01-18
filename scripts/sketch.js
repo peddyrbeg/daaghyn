@@ -1,3 +1,4 @@
+var cnv;
 var stAgent = [];
 var agent = [];
 var daah = [];
@@ -48,7 +49,8 @@ function preload () {
 }
 
 function setup() {
-	var cnv = createCanvas(320, displayHeight-163);
+	if (displayWidth <= 480) cnv = createCanvas(displayWidth, displayHeight-163);
+	else cnv = createCanvas(320, displayHeight-163);
 	var x = (displayWidth - width) / 2;
 	cnv.position(x);
 
